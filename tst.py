@@ -10,7 +10,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-class TestXd():
+class TestUntitled():
   def setup_method(self, method):
     self.driver = webdriver.Chrome()
     self.vars = {}
@@ -18,25 +18,41 @@ class TestXd():
   def teardown_method(self, method):
     self.driver.quit()
   
-  def test_xd(self):
-    # Test name: xd
+  def test_untitled(self):
+    # Test name: Untitled
     # Step # | name | target | value
     # 1 | open | /menu/personales-y-para-compartir/cajun-full | 
     self.driver.get("https://ppys-dev.jnq.io/menu/personales-y-para-compartir/cajun-full")
     # 2 | setWindowSize | 1936x1056 | 
     self.driver.set_window_size(1936, 1056)
-    # 3 | click | css=.btn:nth-child(2) | 
-    self.driver.find_element(By.CSS_SELECTOR, ".btn:nth-child(2)").click()
-    # 4 | click | css=.line-orange | 
+    # 3 | click | css=.line-orange | 
     self.driver.find_element(By.CSS_SELECTOR, ".line-orange").click()
-    # 5 | click | css=.btn-pay | 
+    # 4 | click | css=.btn-pay | 
     self.driver.find_element(By.CSS_SELECTOR, ".btn-pay").click()
-    # 6 | click | css=.icon-pay > input | 
-    self.driver.find_element(By.CSS_SELECTOR, ".icon-pay > input").click()
-    # 7 | type | css=.icon-pay > input | 25
-    self.driver.find_element(By.CSS_SELECTOR, ".icon-pay > input").send_keys("25")
-    # 8 | click | id=terminosCondiciones | 
+    # 5 | mouseOver | css=.btn-pay | 
+    element = self.driver.find_element(By.CSS_SELECTOR, ".btn-pay")
+    actions = ActionChains(self.driver)
+    actions.move_to_element(element).perform()
+    # 6 | mouseOut | css=.btn-pay | 
+    element = self.driver.find_element(By.CSS_SELECTOR, "body")
+    actions = ActionChains(self.driver)
+    actions.move_to_element(element, 0, 0).perform()
+    # 7 | click | css=.btn:nth-child(2) | 
+    self.driver.find_element(By.CSS_SELECTOR, ".btn:nth-child(2)").click()
+    # 8 | click | css=.method-item:nth-child(2) | 
+    self.driver.find_element(By.CSS_SELECTOR, ".method-item:nth-child(2)").click()
+    # 9 | runScript | window.scrollTo(0,111) | 
+    self.driver.execute_script("window.scrollTo(0,111)")
+    # 10 | click | id=terminosCondiciones | 
     self.driver.find_element(By.ID, "terminosCondiciones").click()
-    # 9 | click | css=.large | 
+    # 11 | click | css=.large | 
     self.driver.find_element(By.CSS_SELECTOR, ".large").click()
+    # 12 | selectFrame | index=0 | 
+    self.driver.switch_to.frame(0)
+    # 13 | click | css=.radio:nth-child(2) | 
+    self.driver.find_element(By.CSS_SELECTOR, ".radio:nth-child(2)").click()
+    # 14 | click | id=payment-continue | 
+    self.driver.find_element(By.ID, "payment-continue").click()
+    # 15 | close |  | 
+    self.driver.close()
   
