@@ -26,8 +26,8 @@ class LoginAccount(unittest.TestCase):
         with allure.step(u"Iniciar el controlador de Chrome"):
             options = webdriver.ChromeOptions()
             options.add_experimental_option('excludeSwitches', ['enable-logging'])
-            #inst.driver = webdriver.Chrome(service=Service("D:\\PROYECTOS CICLO IX\\SELENIUM\\Drivers\\chromedriver.exe"),options=options)
-            inst.driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
+            inst.driver = webdriver.Chrome(service=Service("D:\\PROYECTOS CICLO IX\\SELENIUM\\Drivers\\chromedriver.exe"),options=options)
+            #inst.driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
             inst.driver.maximize_window()
             inst.driver.implicitly_wait(15)
     

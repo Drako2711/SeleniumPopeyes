@@ -1,20 +1,18 @@
 import unittest
 import HtmlTestRunner
 import os
-from UnitTest import Login
-from UnitTest2 import Login2
-from UnitTest3 import PurchaseProduct
+from Login import Login
+from PurchaseProducts import PurchaseProduct
   
 # obtener la ruta del directorio al archivo de informe de salida
 dir = os.getcwd()
  
 # se obtienen los test desde SearchText y la clase HomePageTest 
-login1 = unittest.TestLoader().loadTestsFromTestCase(Login)
-login2 = unittest.TestLoader().loadTestsFromTestCase(Login2)
+login = unittest.TestLoader().loadTestsFromTestCase(Login)
 purchase = unittest.TestLoader().loadTestsFromTestCase(PurchaseProduct)
  
 # se crea el pack de test combinando con search_text and home_page_test
-test_suite = unittest.TestSuite([login1,login2,purchase])
+test_suite = unittest.TestSuite([login,purchase])
  
 # abre el archivo de reporte
 outfile = open(dir + "\SeleniumPythonTestSummary.html", "w")
