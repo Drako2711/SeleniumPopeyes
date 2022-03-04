@@ -12,8 +12,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 #from selenium.webdriver.firefox.service import Service
 #Drivers
-from webdriver_manager.chrome import ChromeDriverManager
-#from webdriver_manager.firefox import GeckoDriverManager
+#from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
 #Credenciales
 from credenciales import PopeyeAccounts
 #Otros
@@ -26,8 +26,8 @@ class LoginAccount(unittest.TestCase):
         with allure.step(u"Iniciar el controlador de Chrome"):
             options = webdriver.ChromeOptions()
             options.add_experimental_option('excludeSwitches', ['enable-logging'])
-            inst.driver = webdriver.Chrome(service=Service("D:\\PROYECTOS CICLO IX\\SELENIUM\\Drivers\\chromedriver.exe"),options=options)
-            #inst.driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
+            #inst.driver = webdriver.Chrome(service=Service("D:\\PROYECTOS CICLO IX\\SELENIUM\\Drivers\\chromedriver.exe"),options=options)
+            inst.driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
             inst.driver.maximize_window()
             inst.driver.implicitly_wait(15)
     
