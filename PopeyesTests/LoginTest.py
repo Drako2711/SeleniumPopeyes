@@ -100,131 +100,43 @@ class LoginAccount(unittest.TestCase):
     def test_03_login_confirm(self):        
         self.test_02_login()
         with allure.step(u"Seleccionamos la primera dirección"):        
-            #Delivery, Confirmar Primera dirección    
-            try:
-                element_present = EC.presence_of_element_located((By.CSS_SELECTOR, "div.input-box-old.address-item"))
-                WebDriverWait(self.driver, 30).until(element_present)
-            except TimeoutException:
-                print ("No se encontró ninguna dirección registrada")
-            elem = self.driver.find_element(By.CSS_SELECTOR,'div.input-box-old.address-item')
-            elem.click()
+            self.loginPage.selectAddress(1) #Seleccionar primera dirección
         with allure.step(u"Confirmamos la selección"): 
-            elem = self.driver.find_element(By.XPATH,'//button[contains(text(),"CONFIRMAR")]') 
-            elem.click() 
+            self.loginPage.confirmAddress()
         with allure.step(u"Validamos la configuración de dirección"):        
-            #self.assertTrue(self.is_element_present(By.CSS_SELECTOR,".alert-content.success")) 
-            try:
-                element_present = EC.presence_of_element_located((By.XPATH, '//p[contains(text(),"Tu dirección ha sido configurada correctamente.")]'))
-                WebDriverWait(self.driver, 20).until(element_present) 
-                self.assertTrue(self.is_element_present(By.XPATH,'//p[contains(text(),"Tu dirección ha sido configurada correctamente.")]'))  
-            except TimeoutException:        
-                self.assertTrue(self.is_element_present(By.XPATH,'//p[contains(text(),"Tu dirección ha sido configurada correctamente.")]'),'Ocurrió un problema al confirmar el mensaje dirección correctamente configurada')
+            self.loginPage.validateAddress()
     
     @allure.title(u"Agregar nueva dirección")
     @allure.description(u"Se requiere agregar una nueva dirección")
     @allure.story(u'Dirección')
     def test_04_login_add(self):
         self.test_02_login()
-        #Opcion 2: Delivery, Nueva dirección        
         with allure.step(u"Seleccionamos nueva dirección"):  
-            elem = self.driver.find_element(By.XPATH,'//button[contains(text(),"NUEVA DIRECCIÓN")]') 
-            elem.click()                
+            self.loginPage.clickAddAddress()                           
         with allure.step(u"Ingresamos la dirección de prueba"):  
-            #Entrar al input de dirección 
-            elem = self.driver.find_element(By.ID,'mi_ubicacion') 
-            elem.send_keys("Av. Inca Garcilaso de la Vega 1698, Cercado de Lima, Perú")        
-            #Dar click en la lupa para buscar
-            elem = self.driver.find_element(By.XPATH,'//*[@id="__layout"]/div/div[1]/div[2]/div/div[2]/div/div[2]/div/div/div[1]/button')
-            elem.click()            
-            #selecciona el primer item de la busqueda   
-            elem = self.driver.find_element(By.CLASS_NAME,'pac-item') 
-            elem.click()    
+            self.loginPage.searchAddress("Av. Inca Garcilaso de la Vega 1698, Cercado de Lima, Perú") #Dirección
         with allure.step(u"Ingresamos los datos restantes"):  
-            #Seleccionar Tipo de vivienda
-            try:
-                element_present = EC.presence_of_element_located((By.CSS_SELECTOR, "select"))
-                WebDriverWait(self.driver, 30).until(element_present)
-            except TimeoutException:
-                print ("Se agotó el tiempo de espera para cargar la página")
-            
-            elem = Select(self.driver.find_element(By.CSS_SELECTOR,'select'))
-            #elem.find_element(By.XPATH, "//option[. = 'Casa']").click()      
-            elem.select_by_visible_text("Casa")
-            #Ingresar celular
-            elem = self.driver.find_element(By.CSS_SELECTOR, ".phone > input")
-            elem.send_keys("998218812")
-            #Ingresar Referencia
-            elem = self.driver.find_element(By.CSS_SELECTOR, ".reference > input")
-            elem.send_keys("Referencia")
-            #Seleccionar Casa
-            elem = self.driver.find_element(By.ID,'home')
-            elem.click()
-            #Dar click en Confirmar
-            elem = self.driver.find_element(By.CSS_SELECTOR,'div.content-btn > button')         
-            elem.click()        
+            self.loginPage.searchAddress("Casa","998753545","Referencia", "Casa", False, False, False) #Tipo, Telefono, Referencia, Guardar como, Promociones, Predeterminada, Manzana y Lote            
         with allure.step(u"Validamos la configuración de la dirección"):  
-            self.assertTrue(self.is_element_present(By.XPATH,'//p[contains(text(),"Tu dirección ha sido guardada correctamente.")]'))  
+            self.loginPage.validateAddress()
     
     @allure.title(u"Seleccionar local")    
     @allure.description(u"Se requiere seleccionar un local, en este caso en CENTRO CIVICO")
     @allure.story(u'Dirección')
     def test_05_login_select(self):
-        self.test_02_login()
-        #Opcion 3: Recojo en local, Seleccionar local        
+        self.test_02_login()     
         with allure.step(u"Seleccionamos recojo en local"):  
-            elem = self.driver.find_elements(By.CSS_SELECTOR,'div.button-delivery')[1]
-            elem.click()
-            #Seleccionar el item del local de Cercado de Lima
-            elem = self.driver.find_element(By.XPATH,'//h4[contains(text(),"Cercado de Lima")]')
-        with allure.step(u"Confirmamos la selección"):  
-            self.driver.execute_script("arguments[0].click();", elem)
-            #elem = self.driver.find_element(By.CSS_SELECTOR,'div.buttons-store.btn')  
-            elem = self.driver.find_element(By.XPATH,'//button[contains(text(),"CONFIRMAR")]') 
-            elem.click()
-        with allure.step(u"Validamos el local seleccionada"):              
-            try:
-                element_present = EC.presence_of_element_located((By.CSS_SELECTOR, "div.store-name > p"))
-                WebDriverWait(self.driver, 5).until(element_present)
-                elem = self.driver.find_element(By.CSS_SELECTOR,'div.store-name > p')  
-                self.screenshot("Seleccionar local")
-                self.assertEqual(elem.text,"CENTRO CIVICO","No se seleccionó el local esperada")
-            except TimeoutException:        
-                self.screenshot("Error en la selección de local")
-                self.assertTrue(self.is_element_present(By.CSS_SELECTOR,'div.store-name > p'),'Ocurrió un error al confirmar el local, posiblemente no esté disponible')
+            self.loginPage.selectPickUp()
+        with allure.step(u"Seleccionamos recojo el local"):  
+            self.loginPage.selectStore("Cercado de Lima") #Local Titulo
+        with allure.step(u"Confirmamos la selección"):   
+            self.loginPage.confirmStore()            
+        with allure.step(u"Validamos el local seleccionado"):              
+            self.loginPage.validateStore()                       
        
-    def explicit_wait_click(self,tipo,selector,time,error):
-        try:
-            element_present = EC.element_to_be_clickable((tipo, selector))
-            WebDriverWait(self.driver, time).until(element_present)
-            elem = self.driver.find_element(tipo,selector)  
-            elem.click()
-        except TimeoutException:        
-            self.assertTrue(self.is_element_present(tipo,selector), error)
-            
-    def explicit_wait_equal(self,tipo,selector,time,text,error):
-        try:
-            element_present = EC.element_to_be_clickable((tipo, selector))
-            WebDriverWait(self.driver, time).until(element_present)
-            elem = self.driver.find_element(tipo,selector)  
-            self.assertEqual(elem.text,text,error)
-        except TimeoutException:        
-            self.assertTrue(self.is_element_present(tipo,selector), error)
-    
     @classmethod
     def tearDown(inst):
         inst.driver.quit()
-        
-    def is_element_present(self, how, what):
-        """
-        Metodo auxiliar para confirmar la presencia de un elemento en la página
-        : param how: por tipo de localizador
-        : params what: valor del localizador
-        """
-        try: self.driver.find_element(by=how, value=what)
-        except NoSuchElementException: return False
-        return True
-    def screenshot(self,description):
-        allure.attach(self.driver.get_screenshot_as_png(), description, attachment_type=allure.attachment_type.PNG)
     
 if __name__ == '__main__':
     unittest.main(verbosity=2)
