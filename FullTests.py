@@ -1,15 +1,15 @@
 import unittest
 import HtmlTestRunner
 import os
-from Login import Login
-from PurchaseProducts import PurchaseProduct
+from Login import LoginAccount
+from PurchaseProducts import Purchase
   
 # obtener la ruta del directorio al archivo de informe de salida
 dir = os.getcwd()
  
 # se obtienen los test desde SearchText y la clase HomePageTest 
-login = unittest.TestLoader().loadTestsFromTestCase(Login)
-purchase = unittest.TestLoader().loadTestsFromTestCase(PurchaseProduct)
+login = unittest.TestLoader().loadTestsFromTestCase(LoginAccount)
+purchase = unittest.TestLoader().loadTestsFromTestCase(Purchase)
  
 # se crea el pack de test combinando con search_text and home_page_test
 test_suite = unittest.TestSuite([login,purchase])

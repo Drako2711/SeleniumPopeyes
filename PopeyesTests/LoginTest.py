@@ -14,10 +14,10 @@ from selenium.webdriver.chrome.service import Service
 #Drivers
 from webdriver_manager.chrome import ChromeDriverManager
 #from webdriver_manager.firefox import GeckoDriverManager
-#Credenciales
-from credenciales import PopeyeAccounts
 #Otros
 import sys, os, pytest, subprocess
+#Page
+from ..PopeyesPage.LoginPage import Login
 
 @allure.feature(u'Log in') 
 class LoginAccount(unittest.TestCase):
@@ -31,6 +31,7 @@ class LoginAccount(unittest.TestCase):
             #inst.driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
             inst.driver.maximize_window()
             inst.driver.implicitly_wait(15)
+            inst.loginPage = Login(inst.driver)
     
     @allure.title(u"Navegación inicial")
     @allure.severity(allure.severity_level.MINOR)
@@ -47,112 +48,50 @@ class LoginAccount(unittest.TestCase):
     @allure.description(u"Se requiere iniciar sesión con cuenta nativa")
     @allure.story(u'Inicio de sesión')
     def test_02_login(self):
-        account = PopeyeAccounts.default_account()
         with allure.step(u"Accedemos a la página de inicio de sesión"):
-            self.driver.get("https://ppys-dev.jnq.io/customer/account/login")
+            self.loginPage.navToLogin()
+        
         with allure.step(u"Ingresamos las credenciales de inicio de sesión con cuenta nativa"):
-            elem = self.driver.find_element(By.CSS_SELECTOR,"#__layout > div > div.page-wrapper > div.page-content-wrapper > div > div > div > form > div > div:nth-child(1) > input[type=email]")
-            elem.send_keys(account["user"])
-            elem = self.driver.find_element(By.ID,"input-password")
-            elem.send_keys(account["password"])
-            elem.send_keys(Keys.ENTER)    
+            self.loginPage.loginNative()
+        
         with allure.step(u"Validamos el inicio de sesión"):
-            self.assertTrue(self.is_element_present(By.CSS_SELECTOR,".alert-content.success"))       
-            #Aceptar cookies y seleccionar later en suscribir
-            try: 
-                self.driver.find_element(By.CSS_SELECTOR,".btn.btn-acepta").click()
-                self.driver.find_element(By.CSS_SELECTOR,"#onesignal-slidedown-cancel-button").click()
-            except:
-                print("No se encontraron los botones de cookies ni de suscripción")    
+            self.loginPage.loginValidate("native")    
     
     @allure.title(u"Login cuenta Facebook")
     @allure.story(u'Inicio de sesión')    
     @allure.description(u"Se requiere iniciar sesión con cuenta Facebook")
     def test_02_login_facebook(self):
-        account = PopeyeAccounts.facebook_account()
         with allure.step(u"Ingresamos a la página de inicio de sesión"):
-            self.driver.get("https://ppys-dev.jnq.io/customer/account/login")
+            self.loginPage.navToLogin()
+        
         with allure.step(u"Abrimos ventana de facebook"):
-            elem = self.driver.find_element(By.CSS_SELECTOR,"div.btn-fb")
-            elem.click()
-            #Esperamos a que cargue Facebook
-            try:
-                WebDriverWait(self.driver, 30).until(EC.number_of_windows_to_be(2))
-            except TimeoutException:
-                print ("No se logró cargar la página de facebook")
-            #Cambiamos a la pestaña de Facebook
-            self.driver.switch_to.window(self.driver.window_handles[1])
+            self.loginPage.openWindow("facebook")
+            self.loginPage.switchPage(1) #switch Facebook        
+        
         with allure.step(u"Ingresamos las credenciales de la cuenta de Facebook"):
-            elem = self.driver.find_element(By.ID, "email")
-            elem.send_keys(account["user"])
-            try:
-                element_present = EC.presence_of_element_located((By.ID, "pass"))
-                WebDriverWait(self.driver, 30).until(element_present)
-            except TimeoutException:
-                print ("No se logró cargar el input de contraseña de Facebook")            
-            #Escribir contraseña y correo de facebook / Si se ingresa en otro orden hay error
-            elem = self.driver.find_element(By.ID, "pass")
-            elem.send_keys(account["password"])     
-            elem.send_keys(Keys.ENTER)     
-            #Volver a la pagina de ppys
-            self.driver.switch_to.window(self.driver.window_handles[0])
+            self.loginPage.loginFacebook()      
+            self.loginPage.switchPage(0) #switch Popeyes 
+                 
         with allure.step(u"Validamos el ingreso correcto"):        
-            #Verificamos si el logeo es correcto
-            self.assertTrue(self.is_element_present(By.XPATH,'//p[contains(text(),"¡Bienvenido! Gracias por iniciar sesión con tu cuenta de Facebook en Popeyes.")]'),"Ocurrió un error al intentar ingresar con la cuenta de Facebook")  
-            #Aceptar cookies y seleccionar later en suscribir
-            try: 
-                self.driver.find_element(By.CSS_SELECTOR,".btn.btn-acepta").click()
-                self.driver.find_element(By.CSS_SELECTOR,"#onesignal-slidedown-cancel-button").click()
-            except:
-                print("No se encontraron los botones de cookies ni de suscripción")    
+            self.loginPage.loginValidate("facebook")    
            
     @allure.title(u"Login cuenta Google")
     @allure.story(u'Inicio de sesión')
     @allure.description(u"Se requiere iniciar sesión con cuenta Google")
     def test_02_login_google(self):
-        account = PopeyeAccounts.google_account()
         with allure.step(u"Ingresamos a la página de inicio de sesión"):        
-            self.driver.get("https://ppys-dev.jnq.io/customer/account/login")
+            self.loginPage.navToLogin()
+            
         with allure.step(u"Abrimos ventana de google"):
-            #Seleccionar Google
-            elem = self.driver.find_element(By.ID,"google-signin-btn-0")
-            elem.click()
-            #Esperamos a que cargue Google
-            try:
-                WebDriverWait(self.driver, 30).until(EC.number_of_windows_to_be(2))
-            except TimeoutException:
-                print ("No se logró cargar la página de google") 
-            #Cambiar a la pestaña de Google        
-            self.driver.switch_to.window(self.driver.window_handles[1])
-        with allure.step(u"Ingresamos las credenciales de la cuenta de Google"):
-            #Esperamos a que cargue el botón de iniciar sesión
-            try:
-                element_present = EC.presence_of_element_located((By.ID, "identifierId"))
-                WebDriverWait(self.driver, 30).until(element_present)
-            except TimeoutException:
-                print ("Se agotó el tiempo de espera para cargar la página")            
-            elem = self.driver.find_element(By.ID, "identifierId")
-            elem.send_keys(account["user"])  
-            elem.send_keys(Keys.ENTER)  
-            try:
-                element_present = EC.presence_of_element_located((By.NAME, "password"))
-                WebDriverWait(self.driver, 30).until(element_present)
-            except TimeoutException:
-                print ("Se agotó el tiempo de espera para cargar la página")            
-            elem = self.driver.find_element(By.NAME, "password")
-            elem.send_keys(account["password"])  
-            elem.send_keys(Keys.ENTER)
-            #Volver a la pagina de ppys
-            self.driver.switch_to.window(self.driver.window_handles[0])        
+            self.loginPage.openWindow("google")
+            self.loginPage.switchPage(1) #switch Google 
+            
+        with allure.step(u"Ingresamos las credenciales de la cuenta de Google"):            
+            self.loginPage.loginGoogle()
+            self.loginPage.switchPage(0) #switch Popeyes   
+              
         with allure.step(u"Validamos el ingreso correcto"):                    
-            #Verificamos si el logeo es correcto
-            self.assertTrue(self.is_element_present(By.XPATH,'//p[contains(text(),"¡Bienvenido! Gracias por iniciar sesión con tu cuenta de Google en Popeyes.")]'))  
-            #Aceptar cookies y seleccionar later en suscribir
-            try: 
-                self.driver.find_element(By.CSS_SELECTOR,".btn.btn-acepta").click()
-                self.driver.find_element(By.CSS_SELECTOR,"#onesignal-slidedown-cancel-button").click()
-            except:
-                print("No se encontraron los botones de cookies ni de suscripción")    
+            self.loginPage.loginValidate("google")            
     
     @allure.title(u"Confirmar dirección") 
     @allure.severity(allure.severity_level.BLOCKER)

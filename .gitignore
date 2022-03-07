@@ -1,3 +1,7 @@
 __pycache__/
 .pytest_cache/
 geckodriver.log
+PopeyesPage/__pycache__/
+PopeyesTests/__pycache__/
+PopeyesPage/.pytest_cache/
+PopeyesTests/.pytest_cache/
