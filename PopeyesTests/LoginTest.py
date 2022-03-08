@@ -17,7 +17,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 #Otros
 import sys, os, pytest, subprocess
 #Page
-from ..PopeyesPage.LoginPage import Login
+from ..PopeyesPage.LoginPage import LoginPg
 
 @allure.feature(u'Log in') 
 class LoginAccount(unittest.TestCase):
@@ -31,7 +31,7 @@ class LoginAccount(unittest.TestCase):
             #inst.driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
             inst.driver.maximize_window()
             inst.driver.implicitly_wait(15)
-            inst.loginPage = Login(inst.driver)
+            inst.loginPage = LoginPg(inst.driver)
     
     @allure.title(u"Navegación inicial")
     @allure.severity(allure.severity_level.MINOR)
@@ -104,7 +104,7 @@ class LoginAccount(unittest.TestCase):
         with allure.step(u"Confirmamos la selección"): 
             self.loginPage.confirmAddress()
         with allure.step(u"Validamos la configuración de dirección"):        
-            self.loginPage.validateAddress()
+            self.loginPage.validateAddress("confirm")
     
     @allure.title(u"Agregar nueva dirección")
     @allure.description(u"Se requiere agregar una nueva dirección")
@@ -116,9 +116,9 @@ class LoginAccount(unittest.TestCase):
         with allure.step(u"Ingresamos la dirección de prueba"):  
             self.loginPage.searchAddress("Av. Inca Garcilaso de la Vega 1698, Cercado de Lima, Perú") #Dirección
         with allure.step(u"Ingresamos los datos restantes"):  
-            self.loginPage.searchAddress("Casa","998753545","Referencia", "Casa", False, False, False) #Tipo, Telefono, Referencia, Guardar como, Promociones, Predeterminada, Manzana y Lote            
+            self.loginPage.addDataAddress("Casa","998753545","Referencia", "Casa", False, False, False) #Tipo, Telefono, Referencia, Guardar como, Promociones, Predeterminada, Manzana y Lote            
         with allure.step(u"Validamos la configuración de la dirección"):  
-            self.loginPage.validateAddress()
+            self.loginPage.validateAddress("add")
     
     @allure.title(u"Seleccionar local")    
     @allure.description(u"Se requiere seleccionar un local, en este caso en CENTRO CIVICO")
