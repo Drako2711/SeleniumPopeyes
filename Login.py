@@ -26,6 +26,8 @@ class LoginAccount(unittest.TestCase):
         with allure.step(u"Iniciar el controlador de Chrome"):
             options = webdriver.ChromeOptions()
             options.add_experimental_option('excludeSwitches', ['enable-logging'])
+            options.add_argument('--headless')
+            options.add_argument("--no-sandbox")
             #inst.driver = webdriver.Chrome(service=Service("D:\\PROYECTOS CICLO IX\\SELENIUM\\Drivers\\chromedriver.exe"),options=options)
             inst.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),options=options)
             #inst.driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
@@ -171,7 +173,7 @@ class LoginAccount(unittest.TestCase):
             elem.click()
         with allure.step(u"Confirmamos la selección"): 
             elem = self.driver.find_element(By.XPATH,'//button[contains(text(),"CONFIRMAR")]') 
-            elem.click() 
+            self.driver.execute_script("arguments[0].click();", elem)
         with allure.step(u"Validamos la configuración de dirección"):        
             #self.assertTrue(self.is_element_present(By.CSS_SELECTOR,".alert-content.success")) 
             try:
@@ -189,7 +191,7 @@ class LoginAccount(unittest.TestCase):
         #Opcion 2: Delivery, Nueva dirección        
         with allure.step(u"Seleccionamos nueva dirección"):  
             elem = self.driver.find_element(By.XPATH,'//button[contains(text(),"NUEVA DIRECCIÓN")]') 
-            elem.click()                
+            self.driver.execute_script("arguments[0].click();", elem)             
         with allure.step(u"Ingresamos la dirección de prueba"):  
             #Entrar al input de dirección 
             elem = self.driver.find_element(By.ID,'mi_ubicacion') 
