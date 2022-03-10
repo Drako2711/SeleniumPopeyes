@@ -37,24 +37,33 @@ class LoginPg(unittest.TestCase):
             password.send_keys(account["password"])     
             password.send_keys(Keys.ENTER)    
          
-    def loginGoogle(self):
+    def loginGoogle(self,type):
+        selectorEmail = ""
+        selectorPassword = ""
+        if type == "serve":
+            selectorEmail = "#Email"
+            selectorPassword = "input[type=password]"
+        else:
+            selectorEmail = "#identifierId"
+            selectorPassword = "input[name=password]"
+            
         account = PopeyeAccounts.google_account()        
         #Esperamos a que cargue el botón de iniciar sesión
         try:
-            element_present = EC.presence_of_element_located((By.ID, "identifierId"))
+            element_present = EC.presence_of_element_located((By.CSS_SELECTOR, selectorEmail))
             WebDriverWait(self.driver, 30).until(element_present)
         except TimeoutException:
             print ("Se agotó el tiempo de espera para cargar la página")            
-        user = self.driver.find_element(By.ID, "identifierId")
+        user = self.driver.find_element(By.CSS_SELECTOR, selectorEmail)
         if user is not None:
             user.send_keys(account["user"])  
             user.send_keys(Keys.ENTER)  
         try:
-            element_present = EC.presence_of_element_located((By.NAME, "password"))
+            element_present = EC.presence_of_element_located((By.CSS_SELECTOR, selectorPassword))
             WebDriverWait(self.driver, 30).until(element_present)
         except TimeoutException:
             print ("Se agotó el tiempo de espera para cargar la página")            
-        password = self.driver.find_element(By.NAME, "password")
+        password = self.driver.find_element(By.CSS_SELECTOR, selectorPassword)
         if password is not None:
             password.send_keys(account["password"])  
             password.send_keys(Keys.ENTER)
@@ -90,7 +99,7 @@ class LoginPg(unittest.TestCase):
             elem = self.driver.find_element(By.ID,"google-signin-btn-0")
             elem.click()
         try:
-            WebDriverWait(self.driver, 30).until(EC.number_of_windows_to_be(2))
+            WebDriverWait(self.driver, 45).until(EC.number_of_windows_to_be(2))
         except TimeoutException:
             assert False, f"No se logró cargar la página de {window}"            
     
@@ -122,15 +131,13 @@ class LoginPg(unittest.TestCase):
     def searchAddress(self,address):
         inputNewAddress = self.driver.find_element(By.ID,'mi_ubicacion') 
         if inputNewAddress is not None:            
-            inputNewAddress.send_keys(address)
-            btnSearch = self.driver.find_element(By.XPATH,'//*[@id="__layout"]/div/div[1]/div[2]/div/div[2]/div/div[2]/div/div/div[1]/button')
-            btnSearch.click()        
+            inputNewAddress.send_keys(address)       
+        sleep(1.5)
+        btnSearch = self.driver.find_element(By.XPATH,'//*[@id="__layout"]/div/div[1]/div[2]/div/div[2]/div/div[2]/div/div/div[1]/button')
+        btnSearch.click()        
         #selecciona el primer item de la busqueda   
         elemAddress = self.driver.find_element(By.CLASS_NAME,'pac-item') 
-        if elemAddress is not None:    
-            elemAddress.click()
-        else:
-            assert False, "No se encontró la dirección: "+ address
+        elemAddress.click()          
     
     def addDataAddress(self,type,phone,reference,savehow,promo,default,mznlt):        
         try:

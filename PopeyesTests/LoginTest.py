@@ -87,7 +87,7 @@ class LoginAccount(unittest.TestCase):
             self.loginPage.switchPage(1) #switch Google 
             
         with allure.step(u"Ingresamos las credenciales de la cuenta de Google"):            
-            self.loginPage.loginGoogle()
+            self.loginPage.loginGoogle("local")
             self.loginPage.switchPage(0) #switch Popeyes   
               
         with allure.step(u"Validamos el ingreso correcto"):                    
