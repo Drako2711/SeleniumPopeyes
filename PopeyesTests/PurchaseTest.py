@@ -8,13 +8,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
-#Service
-from selenium.webdriver.chrome.service import Service
-#Driver
-from webdriver_manager.chrome import ChromeDriverManager
-#Otros
-import sys, os, pytest, subprocess
 #Page
+from ..PopeyesPage.BasePage import BasePg
 from ..PopeyesPage.PurchasePage import PurchasePg
 from ..PopeyesPage.LoginPage import LoginPg
 
@@ -23,12 +18,16 @@ class Purchase(unittest.TestCase):
     skip = True
     @classmethod
     def setUp(inst):
-        with allure.step(u"Iniciar el controlador de Chrome"):
-            options = webdriver.ChromeOptions()
-            options.add_experimental_option('excludeSwitches', ['enable-logging'])
-            inst.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),options=options)
-            inst.driver.maximize_window()
-            inst.driver.implicitly_wait(15)
+        with allure.step(u"Iniciar el controlador"):
+            inst.browser = BasePg.get_option("browser")
+            inst.platform = BasePg.get_option("platform")
+            inst.display = BasePg.get_option("display")
+            print("Browser: "+inst.browser)
+            print("Platform: "+inst.platform)
+            print("Display: "+inst.display)
+            #inst.driver = BasePg.__init__(inst, inst.browser,"desktop","a") #browser,platform,display
+            inst.driver = BasePg.__init__(inst, inst.browser,inst.platform,inst.display) #browser,platform,display
+            inst.driver.implicitly_wait(20)
             inst.loginPage = LoginPg(inst.driver)
             inst.purchasePage = PurchasePg(inst.driver)
         

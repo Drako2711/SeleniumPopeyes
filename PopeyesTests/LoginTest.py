@@ -1,6 +1,6 @@
 from time import sleep
 #Unittest
-import unittest, allure
+import unittest, allure, pytest
 #Selenium
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -8,31 +8,26 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
-#Services
-from selenium.webdriver.chrome.service import Service
-#from selenium.webdriver.firefox.service import Service
-#Drivers
-from webdriver_manager.chrome import ChromeDriverManager
-#from webdriver_manager.firefox import GeckoDriverManager
-#Otros
-import sys, os, pytest, subprocess
 #Page
+from ..PopeyesPage.BasePage import BasePg
 from ..PopeyesPage.LoginPage import LoginPg
-
+import sys
 @allure.feature(u'Log in') 
 class LoginAccount(unittest.TestCase):
     @classmethod
     def setUp(inst):
-        with allure.step(u"Iniciar el controlador de Chrome"):
-            options = webdriver.ChromeOptions()
-            options.add_experimental_option('excludeSwitches', ['enable-logging'])
-            #inst.driver = webdriver.Chrome(service=Service("D:\\PROYECTOS CICLO IX\\SELENIUM\\Drivers\\chromedriver.exe"),options=options)
-            inst.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),options=options)
-            #inst.driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
-            inst.driver.maximize_window()
-            inst.driver.implicitly_wait(15)
-            inst.loginPage = LoginPg(inst.driver)
-    
+        with allure.step(u"Iniciar el controlador"):            
+            inst.browser = BasePg.get_option("browser")
+            inst.platform = BasePg.get_option("platform")
+            inst.display = BasePg.get_option("display")
+            print("Browser: "+inst.browser)
+            print("Platform: "+inst.platform)
+            print("Display: "+inst.display)
+            #inst.driver = BasePg.__init__(inst, inst.browser,"desktop","a") #browser,platform,display
+            inst.driver = BasePg.__init__(inst, inst.browser,inst.platform,inst.display) #browser,platform,display
+            inst.driver.implicitly_wait(20)
+            inst.loginPage = LoginPg(inst.driver)     
+
     @allure.title(u"Navegación inicial")
     @allure.severity(allure.severity_level.MINOR)
     @allure.description(u"Se requiere ingresar a la página de Popeyes en la sección de home")
@@ -41,6 +36,7 @@ class LoginAccount(unittest.TestCase):
         with allure.step("Abrir página inicial de Popeyes"):
             self.driver.get("https://ppys-dev.jnq.io/")
             self.assertIn("Popeyes", self.driver.title)
+            self.loginPage.acceptCookies()
             assert "No se encontro el elemento" not in self.driver.page_source
     
     @allure.title(u"Login cuenta nativa")
@@ -81,14 +77,19 @@ class LoginAccount(unittest.TestCase):
     def test_02_login_google(self):
         with allure.step(u"Ingresamos a la página de inicio de sesión"):        
             self.loginPage.navToLogin()
+            #Carga de página  
+            sleep(2)
             
         with allure.step(u"Abrimos ventana de google"):
             self.loginPage.openWindow("google")
             self.loginPage.switchPage(1) #switch Google 
             
         with allure.step(u"Ingresamos las credenciales de la cuenta de Google"):            
-            self.loginPage.loginGoogle("local")
-            self.loginPage.switchPage(0) #switch Popeyes   
+            if self.browser == "Chrome" or self.browser == "chrome" or self.browser == "CHROME" or self.browser == "ch" or self.browser == "Opera" or self.browser == "opera" or self.browser == "op" or self.browser == "default":
+                self.loginPage.loginGoogle("serve") #serve o local
+            else:
+                self.loginPage.loginGoogle("local") #serve o local                
+            self.loginPage.switchPage(0) #switch Popeyes
               
         with allure.step(u"Validamos el ingreso correcto"):                    
             self.loginPage.loginValidate("google")            
@@ -127,7 +128,7 @@ class LoginAccount(unittest.TestCase):
         self.test_02_login()     
         with allure.step(u"Seleccionamos recojo en local"):  
             self.loginPage.selectPickUp()
-        with allure.step(u"Seleccionamos recojo el local"):  
+        with allure.step(u"Seleccionamos el local"):  
             self.loginPage.selectStore("Cercado de Lima") #Local Titulo
         with allure.step(u"Confirmamos la selección"):   
             self.loginPage.confirmStore()            

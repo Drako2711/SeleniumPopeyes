@@ -26,6 +26,7 @@ class LoginPg(unittest.TestCase):
         
         user = self.driver.find_element(By.ID, "email")
         if user is not None:
+            self.screenshot("SS_window_Facebook")
             user.send_keys(account["user"])
         try:
             element_present = EC.presence_of_element_located((By.ID, "pass"))
@@ -35,6 +36,7 @@ class LoginPg(unittest.TestCase):
         password = self.driver.find_element(By.ID, "pass")
         if password is not None:
             password.send_keys(account["password"])     
+            self.screenshot("SS_creedenciales_Facebook")
             password.send_keys(Keys.ENTER)    
          
     def loginGoogle(self,type):
@@ -48,24 +50,29 @@ class LoginPg(unittest.TestCase):
             selectorPassword = "input[name=password]"
             
         account = PopeyeAccounts.google_account()        
+        self.screenshot("SS_abrir google") 
         #Esperamos a que cargue el botón de iniciar sesión
         try:
-            element_present = EC.presence_of_element_located((By.CSS_SELECTOR, selectorEmail))
+            element_present = EC.element_to_be_clickable((By.CSS_SELECTOR, selectorEmail))
             WebDriverWait(self.driver, 30).until(element_present)
         except TimeoutException:
             print ("Se agotó el tiempo de espera para cargar la página")            
         user = self.driver.find_element(By.CSS_SELECTOR, selectorEmail)
         if user is not None:
-            user.send_keys(account["user"])  
-            user.send_keys(Keys.ENTER)  
+            user.send_keys(account["user"])
+            self.screenshot("SS_creedenciales_Google_01")
+            sleep(1)
+            user.send_keys(Keys.ENTER)
         try:
-            element_present = EC.presence_of_element_located((By.CSS_SELECTOR, selectorPassword))
+            element_present = EC.element_to_be_clickable((By.CSS_SELECTOR, selectorPassword))
             WebDriverWait(self.driver, 30).until(element_present)
         except TimeoutException:
             print ("Se agotó el tiempo de espera para cargar la página")            
         password = self.driver.find_element(By.CSS_SELECTOR, selectorPassword)
         if password is not None:
-            password.send_keys(account["password"])  
+            password.send_keys(account["password"])
+            self.screenshot("SS_creedenciales_Google_02")  
+            sleep(1)
             password.send_keys(Keys.ENTER)
     
     #Commom Login
@@ -73,6 +80,7 @@ class LoginPg(unittest.TestCase):
         self.driver.get("https://ppys-dev.jnq.io/customer/account/login")
     
     def loginValidate(self,type):
+        self.screenshot("SS_login_validate_"+type)
         #Verificamos si el logeo es correcto
         if (type == "native"):   
             self.assertTrue(self.is_element_present(By.XPATH,'//p[contains(text(),"¡Bienvenido! Gracias por iniciar sesión en Popeyes.")]'),"Ocurrió un error al intentar ingresar con la cuenta Nativa")          
@@ -86,20 +94,30 @@ class LoginPg(unittest.TestCase):
     def acceptCookies(self):
         #Aceptar cookies y seleccionar later en suscribir
         try: 
-            self.driver.find_element(By.CSS_SELECTOR,".btn.btn-acepta").click()
-            self.driver.find_element(By.CSS_SELECTOR,"#onesignal-slidedown-cancel-button").click()
+            elem = self.driver.find_element(By.CSS_SELECTOR,".btn.btn-acepta")
+            self.driver.execute_script("arguments[0].click();", elem)
+            self.screenshot("cookies nias")
         except:
-            print("No se encontraron los botones de cookies ni de suscripción")
+            print("No se encontró el botón de cookies")
+        try:     
+            elem = self.driver.find_element(By.CSS_SELECTOR,"button.align-right.primary.slidedown-button")
+            self.driver.execute_script("arguments[0].click();", elem)
+        except:
+            print("No se encontró el botón de suscripción")
         
     def openWindow(self,window):
         if(window == "facebook"):
+            element_present = EC.element_to_be_clickable((By.CSS_SELECTOR, "div.btn-fb"))
+            WebDriverWait(self.driver, 30).until(element_present)
             elem = self.driver.find_element(By.CSS_SELECTOR,"div.btn-fb")
-            elem.click()
+            self.driver.execute_script("arguments[0].click();", elem)
         else:
+            element_present = EC.element_to_be_clickable((By.ID, "google-signin-btn-0"))
+            WebDriverWait(self.driver, 30).until(element_present)
             elem = self.driver.find_element(By.ID,"google-signin-btn-0")
-            elem.click()
+            self.driver.execute_script("arguments[0].click();", elem)
         try:
-            WebDriverWait(self.driver, 45).until(EC.number_of_windows_to_be(2))
+            WebDriverWait(self.driver, 30).until(EC.number_of_windows_to_be(2))
         except TimeoutException:
             assert False, f"No se logró cargar la página de {window}"            
     
@@ -120,21 +138,20 @@ class LoginPg(unittest.TestCase):
     def confirmAddress(self):
         confirmButton = self.driver.find_element(By.XPATH,'//button[contains(text(),"CONFIRMAR")]') 
         if confirmButton is not None:
-            confirmButton.click() 
+            self.driver.execute_script("arguments[0].click();", confirmButton)
         
     #New Address
     def clickAddAddress(self):
         btnAddAddress = self.driver.find_element(By.XPATH,'//button[contains(text(),"NUEVA DIRECCIÓN")]') 
         if btnAddAddress is not None:
-            btnAddAddress.click() 
+            self.driver.execute_script("arguments[0].click();", btnAddAddress)
     
     def searchAddress(self,address):
         inputNewAddress = self.driver.find_element(By.ID,'mi_ubicacion') 
         if inputNewAddress is not None:            
             inputNewAddress.send_keys(address)       
-        sleep(1.5)
-        btnSearch = self.driver.find_element(By.XPATH,'//*[@id="__layout"]/div/div[1]/div[2]/div/div[2]/div/div[2]/div/div/div[1]/button')
-        btnSearch.click()        
+            sleep(1.5)
+            inputNewAddress.send_keys(Keys.ENTER)      
         #selecciona el primer item de la busqueda   
         elemAddress = self.driver.find_element(By.CLASS_NAME,'pac-item') 
         elemAddress.click()          
@@ -195,7 +212,14 @@ class LoginPg(unittest.TestCase):
     
     def selectStore(self,store):
         #Seleccionar el item del local 
-        store = self.driver.find_element(By.XPATH,f'//h4[contains(text(),"{store}")]')  
+        self.screenshot("SS_locales")
+        try:
+            element_present = EC.visibility_of_element_located((By.XPATH,f'//h4[contains(text(),"{store}")]'))
+            WebDriverWait(self.driver, 30).until(element_present)
+        except TimeoutException:
+            self.screenshot("SS_error_locales")
+            assert False, f"No se lograron cargar los locales"   
+        store = self.driver.find_element(By.XPATH,f'//h4[contains(text(),"{store}")]')
         self.driver.execute_script("arguments[0].click();", store)
     
     def confirmStore(self):

@@ -15,7 +15,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 #from webdriver_manager.firefox import GeckoDriverManager
 #Credenciales
-from credenciales import PopeyeAccounts
+from .credenciales import PopeyeAccounts
 #Otros
 import sys, os, pytest, subprocess
 
