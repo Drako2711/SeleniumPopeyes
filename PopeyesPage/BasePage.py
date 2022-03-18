@@ -44,6 +44,9 @@ class BasePg(object):
             options.add_argument('--headless')
             options.add_argument("--no-sandbox")
             options.add_argument ('window-size = '+resolution)
+            #Para carga de locales
+            options.set_preference("geo.prompt.testing", True)
+            options.set_preference("geo.prompt.testing.allow", False)    
             driver = webdriver.Firefox(service=ServiceFirefox(GeckoDriverManager().install()),options=options)
         elif browser == "Edge" or browser == "edge" or browser == "EDGE" or browser == "ed":
             br = "Edge"
