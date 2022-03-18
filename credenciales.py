@@ -17,7 +17,3 @@ class PopeyeAccounts():
             'password': '5vB8&9AxAf'
         }
         return account
-
-
-
-
