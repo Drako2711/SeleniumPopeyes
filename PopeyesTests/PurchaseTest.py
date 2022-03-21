@@ -31,6 +31,10 @@ class Purchase(unittest.TestCase):
             inst.loginPage = LoginPg(inst.driver)
             inst.purchasePage = PurchasePg(inst.driver)
         
+    @allure.title(u"Login cuenta nativa")
+    @allure.severity(allure.severity_level.BLOCKER)
+    @allure.description(u"Se requiere iniciar sesión con cuenta nativa")
+    @allure.story(u'Inicio de sesión')
     def test_01_login(self):        
         if self.skip: self.skipTest("Ya realizado en test login")    
         with allure.step(u"Accedemos a la página de inicio de sesión"):
@@ -42,6 +46,10 @@ class Purchase(unittest.TestCase):
         with allure.step(u"Validamos el inicio de sesión"):
             self.loginPage.loginValidate("native")  
     
+    @allure.title(u"Confirmar dirección") 
+    @allure.severity(allure.severity_level.BLOCKER)
+    @allure.description(u"Se requiere confirmar la primera dirección registrada")
+    @allure.story(u'Inicio de sesión')
     def test_02_login_confirm(self):
         if self.skip: self.skipTest("Ya realizado en test login")    
         self.test_01_login()
@@ -114,7 +122,9 @@ class Purchase(unittest.TestCase):
         with allure.step(u"Validamos la compra exitosa"):  
             self.purchasePage.validatePaySuccess("cash")            
               
-
+    @allure.title(u"Pagar el producto del carrito con tarjeta")
+    @allure.description(u"Se requiere pagar el producto que está en el carrito con una tarjeta")
+    @allure.story(u'Compra de un producto')
     def test_05_purchase_bag_online(self):
         self.test_03_purchase_product()
         with allure.step(u"Finalizamos la compra"):  

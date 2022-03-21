@@ -30,6 +30,7 @@ class Purchase(unittest.TestCase):
             inst.driver.maximize_window()
             inst.driver.implicitly_wait(15)
         
+    
     def test_01_login(self):        
         if self.skip: self.skipTest("Ya realizado en test login")    
         account = PopeyeAccounts.default_account()
@@ -192,7 +193,10 @@ class Purchase(unittest.TestCase):
                 self.assertEqual(elem.text,"¡FELICIDADES !","No se encontró el texto")
             except TimeoutException:        
                 self.assertTrue(self.is_element_present(By.CSS_SELECTOR,'.content-main > h1:nth-child(1)'),'Ocurrió un problema al dar click en finalizar compra')        
-
+    
+    @allure.title(u"Pagar el producto del carrito con tarjeta")
+    @allure.description(u"Se requiere pagar el producto que está en el carrito con una tarjeta")
+    @allure.story(u'Compra de un producto')
     def test_05_purchase_bag_online(self):
         self.test_03_purchase_product()
         with allure.step(u"Finalizamos la compra"):  
