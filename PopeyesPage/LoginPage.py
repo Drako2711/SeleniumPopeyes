@@ -95,8 +95,8 @@ class LoginPg(unittest.TestCase):
         #Aceptar cookies y seleccionar later en suscribir
         try: 
             elem = self.driver.find_element(By.CSS_SELECTOR,".btn.btn-acepta")
+            self.screenshot("SS_accept_cookies")
             self.driver.execute_script("arguments[0].click();", elem)
-            self.screenshot("cookies nias")
         except:
             print("No se encontró el botón de cookies")
         try:     
@@ -132,6 +132,7 @@ class LoginPg(unittest.TestCase):
         except TimeoutException:
             assert False, f"No se encontró la dirección número {order-1}"   
         address = self.driver.find_elements(By.CSS_SELECTOR,'div.input-box-old.address-item')
+        self.screenshot("SS_select_address")
         if address is not None:
             address[order-1].click()
             
@@ -153,6 +154,7 @@ class LoginPg(unittest.TestCase):
             sleep(1.5)
             inputNewAddress.send_keys(Keys.ENTER)      
         #selecciona el primer item de la busqueda   
+        self.screenshot("SS_search_address")
         elemAddress = self.driver.find_element(By.CLASS_NAME,'pac-item') 
         elemAddress.click()          
     
@@ -202,6 +204,7 @@ class LoginPg(unittest.TestCase):
             checkDefault = self.driver.find_element(By.CSS_SELECTOR, "label:nth-child(2) > input")
             checkDefault.click()
         
+        self.screenshot("SS_Add_Data_Address")
         btnConfirm = self.driver.find_element(By.CSS_SELECTOR,'div.content-btn > button')         
         btnConfirm.click()
         
@@ -231,7 +234,7 @@ class LoginPg(unittest.TestCase):
             element_present = EC.presence_of_element_located((By.CSS_SELECTOR, "div.store-name > p"))
             WebDriverWait(self.driver, 5).until(element_present)
             elem = self.driver.find_element(By.CSS_SELECTOR,'div.store-name > p')  
-            self.screenshot("Seleccionar local")
+            self.screenshot("SS_validate_local")
             self.assertTrue(elem.text == "CENTRO CIVICO","No se seleccionó el local esperado")
         except TimeoutException:        
             self.screenshot("Error en la selección de local")
@@ -244,7 +247,8 @@ class LoginPg(unittest.TestCase):
             selectorPath = '//p[contains(text(),"Tu dirección ha sido configurada correctamente.")]'
             try:
                 element_present = EC.presence_of_element_located((By.XPATH, selectorPath))
-                WebDriverWait(self.driver, 20).until(element_present) 
+                WebDriverWait(self.driver, 20).until(element_present)
+                self.screenshot("SS_validate_address")
                 self.assertTrue(self.is_element_present(By.XPATH, selectorPath),msgError)  
             except TimeoutException:        
                 assert False, msgError
@@ -253,7 +257,8 @@ class LoginPg(unittest.TestCase):
             selectorPath = '//p[contains(text(),"Tu dirección ha sido guardada correctamente.")]'
             try:
                 element_present = EC.presence_of_element_located((By.XPATH, selectorPath))
-                WebDriverWait(self.driver, 20).until(element_present) 
+                WebDriverWait(self.driver, 20).until(element_present)
+                self.screenshot("SS_validate_address") 
                 self.assertTrue(self.is_element_present(By.XPATH, selectorPath),msgError)  
             except TimeoutException:        
                 assert False, msgError          
