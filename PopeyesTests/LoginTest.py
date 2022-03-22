@@ -134,6 +134,16 @@ class LoginAccount(unittest.TestCase):
             self.loginPage.confirmStore()            
         with allure.step(u"Validamos el local seleccionado"):              
             self.loginPage.validateStore()                       
+    
+    def test_06_address_clean(self):
+        self.test_02_login()     
+        with allure.step(u"Ingresamos a la cuenta"):  
+            self.loginPage.navToLogin()
+        with allure.step(u"Ingresamos a las direcciones"):  
+            self.loginPage.navToAddress()
+        with allure.step(u"Borramos las direcciones guardadas"):  
+            self.loginPage.cleanAddress()
+        
        
     @classmethod
     def tearDown(inst):
