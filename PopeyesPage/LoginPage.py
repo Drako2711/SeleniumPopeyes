@@ -78,6 +78,10 @@ class LoginPg(unittest.TestCase):
     #Commom Login
     def navToLogin(self):
         self.driver.get("https://ppys-dev.jnq.io/customer/account/login")
+    def navToAccount(self):
+        self.driver.get("https://ppys-dev.jnq.io/customer/account")
+    def navToAddress(self):
+        self.driver.get("https://ppys-dev.jnq.io/customer/address")
     
     def loginValidate(self,type):
         self.screenshot("SS_login_validate_"+type)
@@ -239,6 +243,31 @@ class LoginPg(unittest.TestCase):
         except TimeoutException:        
             self.screenshot("Error en la selección de local")
             assert False, "Ocurrió un error al confirmar el local, posiblemente no esté disponible"
+    
+    #Clean Address
+    def cleanAddress(self):
+        print("Limpiando direcciones")
+        elem = self.driver.find_elements(By.CSS_SELECTOR,'div > .address-item img')
+        count = len(elem)
+        try:
+            while(count > 1):            
+                sleep(1)
+                elem = self.driver.find_element(By.CSS_SELECTOR, "div:nth-child(2) > .address-item img")
+                self.driver.execute_script("arguments[0].click();", elem)
+                sleep(1)
+                elem = self.driver.find_element(By.LINK_TEXT, "Eliminar")
+                self.driver.execute_script("arguments[0].click();", elem)
+                sleep(1)
+                elem = self.driver.find_element(By.CSS_SELECTOR, ".btn-acept")
+                self.driver.execute_script("arguments[0].click();", elem)
+                sleep(1)
+                count = count - 1
+            self.screenshot("SS_limpiar_direcciones")
+            assert True
+        except TimeoutException:        
+            self.screenshot("SS_error_limpiar_direcciones")
+            assert False, "Ocurrió un error al eliminar las direcciones"
+        
         
     #Commmon Address
     def validateAddress(self,msg):

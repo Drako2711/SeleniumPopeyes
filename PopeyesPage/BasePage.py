@@ -36,14 +36,11 @@ class BasePg(object):
             options.add_argument('--headless')
             options.add_argument("--no-sandbox")
             driver = webdriver.Chrome(service=ServiceChrome(ChromeDriverManager().install()),options=options)
-            dis = resolution.split("x")
-            driver.set_window_size(dis[0],dis[1]) 
         elif browser == "Firefox" or browser == "firefox" or browser == "FIREFOX" or browser == "ff":
             br = "Firefox"
             options = FirefoxOptions()
             options.add_argument('--headless')
             options.add_argument("--no-sandbox")
-            options.add_argument ('window-size = '+resolution)
             #Para carga de locales
             options.set_preference("geo.prompt.testing", True)
             options.set_preference("geo.prompt.testing.allow", False)    
@@ -53,14 +50,12 @@ class BasePg(object):
             options = EdgeOptions()
             options.add_argument('--headless')
             options.add_argument("--no-sandbox")
-            options.add_argument ('window-size = '+resolution)
             driver = webdriver.Edge(service=ServiceEdge(EdgeChromiumDriverManager().install()),options=options)
         elif browser == "Opera" or browser == "opera" or browser == "OPERA" or browser == "op":
             br = "Opera"
             options = webdriver.ChromeOptions()
             options.add_argument('--headless')
             options.add_argument("--no-sandbox")
-            options.add_argument ('window-size = '+resolution)
             options.add_experimental_option('w3c', True) 
             driver = webdriver.Opera(executable_path=OperaDriverManager().install(),options=options)
         elif browser == "IE" or browser == "ie" or browser == "IEXPLORER" or browser == "iex":
@@ -68,9 +63,11 @@ class BasePg(object):
             options = IeOptions()
             options.add_argument('--headless')
             options.add_argument("--no-sandbox")
-            options.add_argument ('window-size = 1920x1080')
+            #options.add_argument ('window-size = 1920x1080')
             driver = webdriver.Ie(service=ServiceIE(IEDriverManager().install()),options=options)
         try:
+            dis = resolution.split("x")
+            driver.set_window_size(dis[0],dis[1])
             self.driver = driver
             BasePg.set_environment(br,platform,resolution,driver.capabilities['browserVersion'])
         except Exception:
