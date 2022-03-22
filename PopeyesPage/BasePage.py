@@ -121,7 +121,7 @@ class BasePg(object):
             return Exception('Unknown platform')
     
     def set_environment(br,pl,dis,ver):
-        f = open("./results/environment.properties","w+")
+        f = open("../allure-results/environment.properties","w+")
         f.write("Navegador = " + br + " " + ver + "\n")
         f.write("Plataforma = " + pl + "\n")
         f.write("Pantalla = " + dis + "\n")
