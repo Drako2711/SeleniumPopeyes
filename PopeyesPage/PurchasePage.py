@@ -5,13 +5,15 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from .BasePage import BasePg
 
 class PurchasePg(unittest.TestCase):
     def __init__(self, driver):
+        self.host = BasePg.get_option("host")
         self.driver = driver    
     #Navs
     def navHome(self):
-        self.driver.get("https://ppys-dev.jnq.io/")
+        self.driver.get(str(self.host))
     
     def navPersonales(self):
         btnPersonales = self.driver.find_element(By.XPATH,'//h4[contains(text(),"Personales y para compartir")]')

@@ -25,7 +25,7 @@ from selenium.webdriver.ie.options import Options as IeOptions
 import sys, os
 
 class BasePg(object):
-    def __init__(self,browser,display):
+    def __init__(self,host,browser,display):
         br = ""
         if browser == "Chrome" or browser == "chrome" or browser == "CHROME" or browser == "ch":
             br = "Google Chrome"
@@ -81,6 +81,8 @@ class BasePg(object):
     def get_option(option):
         if (option == "browser"):
             return os.environ["V_Browser"]    
+        elif (option == "host"):
+            return os.environ["V_Host"]
         elif (option == "display"):
             return os.environ["V_Display"]
             

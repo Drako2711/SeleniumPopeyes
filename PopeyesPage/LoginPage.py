@@ -6,8 +6,10 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
 from ..credenciales import PopeyeAccounts
+from .BasePage import BasePg
 class LoginPg(unittest.TestCase):
     def __init__(self, driver):
+        self.host = BasePg.get_option("host")
         self.driver = driver
     #Login
     def loginNative(self):
@@ -77,11 +79,11 @@ class LoginPg(unittest.TestCase):
     
     #Commom Login
     def navToLogin(self):
-        self.driver.get("https://ppys-dev.jnq.io/customer/account/login")
+        self.driver.get(str(self.host)+"customer/account/login")
     def navToAccount(self):
-        self.driver.get("https://ppys-dev.jnq.io/customer/account")
+        self.driver.get(str(self.host)+"customer/account")
     def navToAddress(self):
-        self.driver.get("https://ppys-dev.jnq.io/customer/address")
+        self.driver.get(str(self.host)+"customer/address")
     
     def loginValidate(self,type):
         self.screenshot("SS_login_validate_"+type)

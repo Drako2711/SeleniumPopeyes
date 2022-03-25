@@ -20,11 +20,13 @@ class Purchase(unittest.TestCase):
     def setUp(inst):
         with allure.step(u"Iniciar el controlador"):
             inst.browser = BasePg.get_option("browser")
+            inst.host = BasePg.get_option("host")
             inst.display = BasePg.get_option("display")
             print("Browser: "+inst.browser)
+            print("Host: "+str(inst.host))
             print("Display: "+inst.display)
             #inst.driver = BasePg.__init__(inst, inst.browser,"desktop","a") #browser,platform,display
-            inst.driver = BasePg.__init__(inst, inst.browser,inst.display) #browser,platform,display
+            inst.driver = BasePg.__init__(inst,inst.host ,inst.browser,inst.display) #browser,platform,display
             inst.driver.implicitly_wait(20)
             inst.loginPage = LoginPg(inst.driver)
             inst.purchasePage = PurchasePg(inst.driver)
