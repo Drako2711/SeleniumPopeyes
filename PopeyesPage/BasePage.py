@@ -25,8 +25,7 @@ from selenium.webdriver.ie.options import Options as IeOptions
 import sys, os
 
 class BasePg(object):
-    def __init__(self,browser,platform,display):
-        resolution = BasePg.TypePlatform(platform,display)
+    def __init__(self,browser,display):
         br = ""
         if browser == "Chrome" or browser == "chrome" or browser == "CHROME" or browser == "ch":
             br = "Google Chrome"
@@ -65,11 +64,16 @@ class BasePg(object):
             options.add_argument("--no-sandbox")
             #options.add_argument ('window-size = 1920x1080')
             driver = webdriver.Ie(service=ServiceIE(IEDriverManager().install()),options=options)
-        try:
-            dis = resolution.split("x")
-            driver.set_window_size(dis[0],dis[1])
+        
+        dis = display.split("x")
+        if (len(dis) == 2):
+            driver.set_window_size(int(dis[0]),int(dis[1]))
+        else:                
+            raise NameError("Ingrese un tamaño de pantalla valida")
+        
+        try:            
             self.driver = driver
-            BasePg.set_environment(br,platform,resolution,driver.capabilities['browserVersion'])
+            BasePg.set_environment(br,display,driver.capabilities['browserVersion'])
         except Exception:
             raise NameError("Not found %s browser,You can enter 'ie', 'ff' or 'chrome'." % browser + " error: "+browser)
         return self.driver
@@ -77,50 +81,12 @@ class BasePg(object):
     def get_option(option):
         if (option == "browser"):
             return os.environ["V_Browser"]    
-        elif (option == "platform"):    
-            return os.environ["V_Platform"]
         elif (option == "display"):
             return os.environ["V_Display"]
-
             
-    def TypePlatform(platform,display):
-        if platform == 'mobile' or platform == "Mobile" or platform == "MOBILE" or platform == "m":
-            if display == 'a': #11%
-                return "412x915"
-            elif display == "b": #8%
-                return "360x640"      
-            elif display == "c":#7%
-                return "393x851"  
-            elif display == "d": #7%
-                return "360x780"
-            elif display == "e": #7%
-                return "412x892"
-            elif display == "f": #6%
-                return "393x873"
-            else:
-                return display
-        elif platform == 'desktop' or platform == "Desktop" or platform == "DESKTOP" or platform == "d":
-            if display == 'a': #36%
-                return "1366x768"
-            elif display == "b": #20%
-                return "1920x1080"      
-            elif display == "c":#10%
-                return "1536x864"  
-            elif display == "d": #5%
-                return "1600x900"
-            elif display == "e": #4%
-                return "1440x900"
-            elif display == "f": #3%
-                return "1280x720"
-            else: 
-                return display
-        else:
-            return Exception('Unknown platform')
-    
-    def set_environment(br,pl,dis,ver):
+    def set_environment(br,dis,ver):
         f = open("../allure-results/environment.properties","w+")
         f.write("Navegador = " + br + " " + ver + "\n")
-        f.write("Plataforma = " + pl + "\n")
         f.write("Pantalla = " + dis + "\n")
         f.close()
 

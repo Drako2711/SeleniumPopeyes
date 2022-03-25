@@ -136,7 +136,8 @@ class PurchasePg(unittest.TestCase):
             self.screenshot("Compra exitosa")
             txtResult = self.driver.find_element(By.CSS_SELECTOR,selector)  
             self.assertTrue(txtResult.text==txtCompare,"No se encontró el texto que verifica la compra")
-        except TimeoutException:        
+        except TimeoutException:      
+            self.screenshot("SS_compra_fallida")
             assert False, 'Ocurrió un problema al finalizar la compra' 
     
     #Purchase with credit card

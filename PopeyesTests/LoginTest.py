@@ -18,13 +18,11 @@ class LoginAccount(unittest.TestCase):
     def setUp(inst):
         with allure.step(u"Iniciar el controlador"):            
             inst.browser = BasePg.get_option("browser")
-            inst.platform = BasePg.get_option("platform")
             inst.display = BasePg.get_option("display")
             print("Browser: "+inst.browser)
-            print("Platform: "+inst.platform)
             print("Display: "+inst.display)
             #inst.driver = BasePg.__init__(inst, inst.browser,"desktop","a") #browser,platform,display
-            inst.driver = BasePg.__init__(inst, inst.browser,inst.platform,inst.display) #browser,platform,display
+            inst.driver = BasePg.__init__(inst, inst.browser,inst.display) #browser,platform,display
             inst.driver.implicitly_wait(20)
             inst.loginPage = LoginPg(inst.driver)     
 
