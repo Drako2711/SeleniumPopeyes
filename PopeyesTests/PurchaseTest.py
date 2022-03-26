@@ -26,7 +26,7 @@ class Purchase(unittest.TestCase):
             print("Host: "+str(inst.host))
             print("Display: "+inst.display)
             #inst.driver = BasePg.__init__(inst, inst.browser,"desktop","a") #browser,platform,display
-            inst.driver = BasePg.__init__(inst,inst.host ,inst.browser,inst.display) #browser,platform,display
+            inst.driver = BasePg.__init__(inst,inst.browser,inst.display) #browser,platform,display
             inst.driver.implicitly_wait(20)
             inst.loginPage = LoginPg(inst.driver)
             inst.purchasePage = PurchasePg(inst.driver)

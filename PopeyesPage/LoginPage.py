@@ -79,11 +79,11 @@ class LoginPg(unittest.TestCase):
     
     #Commom Login
     def navToLogin(self):
-        self.driver.get(str(self.host)+"customer/account/login")
+        self.driver.get(str(self.host)+"/customer/account/login")
     def navToAccount(self):
-        self.driver.get(str(self.host)+"customer/account")
+        self.driver.get(str(self.host)+"/customer/account")
     def navToAddress(self):
-        self.driver.get(str(self.host)+"customer/address")
+        self.driver.get(str(self.host)+"/customer/address")
     
     def loginValidate(self,type):
         self.screenshot("SS_login_validate_"+type)
